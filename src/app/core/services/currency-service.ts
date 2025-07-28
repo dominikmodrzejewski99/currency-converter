@@ -1,8 +1,14 @@
-import {computed, Injectable} from '@angular/core';
-import {httpResource} from '@angular/common/http';
-import {CurrencyType} from '../../shared/models/currency.model';
-import {environment} from '../../../environments/environment';
-import {ConversionType} from '../../shared/models/conversion.model';
+import { computed, Injectable, signal } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { CurrenciesApiResponse } from '../../shared/models/currency.model';
+import { environment } from '../../../environments/environment';
+import { ConversionApiResponse } from '../../shared/models/conversion.model';
+
+interface ConversionParams {
+  readonly from: string;
+  readonly to: string;
+  readonly amount: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +16,47 @@ import {ConversionType} from '../../shared/models/conversion.model';
 export class CurrencyService {
 
   public readonly currencies = computed(() => {
-    return this.resourceCurrencies.value();
+    const response = this.resourceCurrencies.value();
+    return response?.response || [];
   });
 
-  private resourceCurrencies = httpResource<CurrencyType>(() => {
+  public readonly conversionResult = computed(() => {
+    const response = this.resourceConversionResult.value();
+    return response?.response || null;
+  });
+
+  public readonly isCurrenciesLoading = computed(() => {
+    return this.resourceCurrencies.isLoading();
+  });
+
+  public readonly isConversionLoading = computed(() => {
+    return this.resourceConversionResult.isLoading();
+  });
+
+  public readonly currenciesError = computed(() => {
+    return this.resourceCurrencies.error();
+  });
+
+  public readonly conversionError = computed(() => {
+    return this.resourceConversionResult.error();
+  });
+
+
+  public convertCurrency(params: ConversionParams): void {
+    this.conversionParams.set(params);
+  }
+
+  public clearConversion(): void {
+    this.conversionParams.set(null);
+  }
+
+  public reloadCurrencies(): void {
+    this.resourceCurrencies.reload();
+  }
+
+  private readonly conversionParams = signal<ConversionParams | null>(null);
+
+  private resourceCurrencies = httpResource<CurrenciesApiResponse>(() => {
     const url = `${environment.apiUrl}currencies`;
 
     return {
@@ -26,21 +69,20 @@ export class CurrencyService {
     }
   });
 
-  private resourceConversionResult = httpResource<ConversionType>(() => {
-    const url = `${environment.apiUrl}convert`;
+  private resourceConversionResult = httpResource<ConversionApiResponse>(() => {
+    const params = this.conversionParams();
+
+    if (!params) return undefined;
 
     return {
-      url: url,
+      url: `${environment.apiUrl}convert`,
       params: {
         api_key: environment.apiKey,
-        from: 'USD',
-        to: 'PLN',
-        amount: '100'
+        from: params.from,
+        to: params.to,
+        amount: params.amount.toString()
       },
       method: 'GET'
     };
   });
-
-
-
 }
