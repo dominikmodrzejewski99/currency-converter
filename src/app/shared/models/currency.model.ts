@@ -13,3 +13,6 @@ export interface Currency {
 export interface CurrenciesApiResponse {
   response: Currency[];
 }
+
+export type CurrencyType = Pick<Currency, 'short_code' | 'name'>;
+
