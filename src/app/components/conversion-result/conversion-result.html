@@ -1,1 +1,65 @@
-<p>conversion-result works!</p>
+<div class="conversion-result">
+    <div class="result-header">
+        <h2>Conversion Result</h2>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Converting currencies...</p>
+      </div>
+    } @else if (error()) {
+      <div class="error-state">
+          <div class="error-alert">
+              <strong>❌ Conversion Error:</strong>
+              <p>{{ error()?.message }}</p>
+          </div>
+      </div>
+    } @else if (conversionResult()) {
+      <div class="result-card">
+
+          <div class="conversion-display">
+              <div class="amount-from">
+                  <span class="value">{{ conversionResult()!.amount | number:'1.2-2' }}</span>
+                  <span class="currency">{{ conversionResult()!.from }}</span>
+              </div>
+
+              <div class="conversion-arrow">
+                  <span class="arrow">→</span>
+              </div>
+
+              <div class="amount-to">
+                  <span class="value">{{ conversionResult()!.value | number:'1.2-2' }}</span>
+                  <span class="currency">{{ conversionResult()!.to }}</span>
+              </div>
+          </div>
+
+          <div class="rate-info">
+              <p class="exchange-rate">
+                  <strong>Exchange Rate:</strong>
+                  1 {{ conversionResult()!.from }} =
+                  {{ (conversionResult()!.value / conversionResult()!.amount) | number:'1.4-6' }}
+                  {{ conversionResult()!.to }}
+              </p>
+
+              <p class="conversion-date">
+                  <strong>Date:</strong> {{ conversionResult()!.date | date:'medium' }}
+              </p>
+          </div>
+
+          <div class="result-actions">
+              <button type="button" (click)="onClear()" class="clear-button">
+                  Clear Result
+              </button>
+          </div>
+
+      </div>
+    } @else {
+      <div class="no-result">
+          <div class="placeholder">
+              <p>💱</p>
+              <p>Select currencies and amount, then click "Convert" to see the result.</p>
+          </div>
+      </div>
+    }
+</div>

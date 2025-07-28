@@ -1,1 +1,73 @@
-<p>currency-converter-form works!</p>
+<div class="currency-form">
+    <div class="form-header">
+        <h2>Currency Converter</h2>
+
+        @if (error()) {
+        <div class="error-alert">
+            <strong>❌ Error:</strong> {{ error()?.message }}
+        </div>
+        }
+    </div>
+
+    @if (isLoading()) {
+    <div class="loading-state">
+        <p>⏳ Loading currencies...</p>
+    </div>
+    } @else if (currencies().length === 0) {
+    <div class="no-data">
+        <p>No currencies available</p>
+    </div>
+    } @else {
+    <form (ngSubmit)="onSubmit()" class="conversion-form">
+
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input id="amount" type="number" [(ngModel)]="amount" name="amount" min="0.01" step="0.01"
+                class="amount-input" placeholder="Enter amount" required>
+        </div>
+
+        <div class="currency-row">
+
+            <div class="form-group">
+                <label for="from">From:</label>
+                <select id="from" [(ngModel)]="fromCurrency" name="from" class="currency-select" required>
+                    <option value="">Select currency</option>
+                    @for (currency of currencies(); track currency.code) {
+                    <option [value]="currency.short_code">
+                        {{ currency.name }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <button type="button" (click)="onSwap()" class="swap-button" [disabled]="!fromCurrency() || !toCurrency()"
+                title="Swap currencies">
+                ↔️
+            </button>
+
+            <div class="form-group">
+                <label for="to">To:</label>
+                <select id="to" [(ngModel)]="toCurrency" name="to" class="currency-select" required>
+                    <option value="">Select currency</option>
+                    @for (currency of currencies(); track currency.code) {
+                    <option [value]="currency.short_code">
+                        {{ currency.name }}
+                    </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" (click)="onReset()" class="reset-button">
+                Reset
+            </button>
+
+            <button type="submit" class="convert-button"
+                [disabled]="!fromCurrency() || !toCurrency() || amount() <= 0 || fromCurrency() === toCurrency()">
+                Convert
+            </button>
+        </div>
+    </form>
+    }
+</div>

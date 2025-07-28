@@ -1,10 +1,12 @@
 import { Component, computed, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyService } from './core/services/currency-service';
+import { CurrencyConverterForm } from './components/currency-converter-form/currency-converter-form';
+import { ConversionResult } from './components/conversion-result/conversion-result';
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule],
+  imports: [FormsModule, CurrencyConverterForm, ConversionResult],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.scss'
@@ -35,7 +37,7 @@ export class App {
     isFormValid: this.isFormValid()
   }));
 
-  protected onConvertCurrency(): void {
+  protected onConversionRequested(): void {
     if (this.isFormValid()) {
       this.currencyService.convertCurrency({
         from: this.fromCurrency(),
@@ -45,4 +47,20 @@ export class App {
     }
   }
 
+  protected onFormReset(): void {
+    this.fromCurrency.set('');
+    this.toCurrency.set('');
+    this.amount.set(1);
+    this.currencyService.clearConversion();
+  }
+
+  protected onCurrenciesSwap(): void {
+    const temp = this.fromCurrency();
+    this.fromCurrency.set(this.toCurrency());
+    this.toCurrency.set(temp);
+  }
+
+  protected onClearResult(): void {
+    this.currencyService.clearConversion();
+  }
 }

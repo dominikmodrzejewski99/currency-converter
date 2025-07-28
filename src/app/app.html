@@ -1,9 +1,21 @@
-<main>
-  <div>
-    <h1>Currency Converter</h1>
-  </div>
+<div class="app-container">
+  <main>
+    <section class="form-section">
+      <app-currency-converter-form [currencies]="viewModel().currencies" [isLoading]="viewModel().isCurrenciesLoading"
+                                   [error]="viewModel().currenciesError || null" [(fromCurrency)]="fromCurrency"
+                                   [(toCurrency)]="toCurrency"
+                                   [(amount)]="amount" (conversionRequest)="onConversionRequested()"
+                                   (formReset)="onFormReset()"
+                                   (currenciesSwap)="onCurrenciesSwap()">
+      </app-currency-converter-form>
+    </section>
 
-  <div>
-    {{viewModel().currencies}}
-  </div>
-</main>
+    <section class="result-section">
+      <app-conversion-result [conversionResult]="viewModel().conversionResult"
+                             [isLoading]="viewModel().isConversionLoading" [error]="viewModel().conversionError || null"
+                             (clearResult)="onClearResult()">
+      </app-conversion-result>
+    </section>
+  </main>
+
+</div>
