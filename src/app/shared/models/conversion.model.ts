@@ -13,3 +13,5 @@ export interface ConversionApiResponse {
   meta: ApiResponseMeta;
   response: Conversion;
 }
+
+export type ConversionType = Omit<Conversion, 'timestamp' | 'date'>
