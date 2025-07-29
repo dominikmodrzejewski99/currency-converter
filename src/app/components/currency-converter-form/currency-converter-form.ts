@@ -51,7 +51,6 @@ export class CurrencyConverterForm {
     toObservable(this.formState)
       .pipe(
         filter(() => this.isFormValid() && !this.hasError()),
-        debounceTime(300),
         exhaustMap(() => {
           this.conversionRequest.emit();
           return EMPTY;
