@@ -34,6 +34,14 @@ ng serve
 
 Navigate to <http://localhost>.
 
+## End-to-End Tests
+
+The project includes a basic E2E test built with Cypress that uses the Page Object Model (POM) to maintain clean and modular test code. The test covers a scenario where the user selects currencies, enters an amount, and verifies the conversion result, with API calls intercepted to provide a sample conversion value.
+
+To run the E2E tests, execute:
+
+    ng e2e
+
 ## Application Flow
 
 1. **Currency Selection** – app fetches currencies (`/currencies`) and fills two `<select>` boxes.
@@ -46,3 +54,5 @@ Navigate to <http://localhost>.
 - **Smart / Dumb Components** – the root `App` smart component handles state and side effects, while `CurrencyConverterForm` and `ConversionResult` are stateless, presentational dump components.
 
 - **Angular Signals** – state is managed with `signal`, `computed`, and `effect`. The decision to skip `ReactiveFormsModule` was deliberate, as native signal integration for forms is expected in a future Angular release.
+
+- **Cypress Testing with POM** – the E2E tests are built with Cypress and use the Page Object Model (POM) approach to maintain clean and modular test code.
