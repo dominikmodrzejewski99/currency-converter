@@ -1,59 +1,48 @@
-# CurrencyConverter
+# Currency Converter
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.3.
+## Prerequisites
 
-## Development server
+* Node.js 18+
+* Angular CLI ^20.1
 
-To start a local development server, run:
+## Getting Started
+
+```bash
+git clone https://github.com/dominikmodrzejewski99/currency-converter.git
+cd currency-converter
+npm install
+```
+
+## Environment
+
+Create `src/environments/environment.ts` (or update existing) with your **CurrencyBeacon** token:
+
+```ts
+export const environment = {
+  apiUrl: 'https://api.currencybeacon.com/v1/',
+  apiKey: '<YOUR_API_KEY>',
+};
+```
+
+Sign up at <https://currencybeacon.com> (free tier) and copy the key from **API Token Information**.
+
+## Running Locally
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to <http://localhost>.
 
-## Code scaffolding
+## Application Flow
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. **Currency Selection** – app fetches currencies (`/currencies`) and fills two `<select>` boxes.
+2. **Conversion** – after selecting currencies and amount, it calls `/convert`.
 
-```bash
-ng generate component component-name
-```
+## Architectural Decisions
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- **httpResource** – deliberately chosen as an experimental Angular API that exposes built-in `isLoading`, `error`, and `value` signals, keeping view logic minimal. I know that `httpResource` is currently in developer preview, but I saw in the requirements that this approach is acceptable, so I wanted to demonstrate its usage. In the future, switching to the regular `HttpClient` will be straightforward since all HTTP calls are centralized in `CurrencyService`.
 
-```bash
-ng generate --help
-```
+- **Smart / Dumb Components** – the root `App` smart component handles state and side effects, while `CurrencyConverterForm` and `ConversionResult` are stateless, presentational dump components.
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Angular Signals** – state is managed with `signal`, `computed`, and `effect`. The decision to skip `ReactiveFormsModule` was deliberate, as native signal integration for forms is expected in a future Angular release.
