@@ -14,4 +14,10 @@ export interface ConversionApiResponse {
   response: Conversion;
 }
 
+export interface ConversionParams {
+  readonly from: string;
+  readonly to: string;
+  readonly amount: number;
+}
+
 export type ConversionType = Omit<Conversion, 'timestamp' | 'date'>

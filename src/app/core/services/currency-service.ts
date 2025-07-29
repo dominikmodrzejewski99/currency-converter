@@ -2,13 +2,7 @@ import { computed, Injectable, signal } from '@angular/core';
 import { httpResource } from '@angular/common/http';
 import { CurrenciesApiResponse } from '../../shared/models/currency.model';
 import { environment } from '../../../environments/environment';
-import { ConversionApiResponse } from '../../shared/models/conversion.model';
-
-interface ConversionParams {
-  readonly from: string;
-  readonly to: string;
-  readonly amount: number;
-}
+import { ConversionApiResponse, ConversionParams } from '../../shared/models/conversion.model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,40 +19,20 @@ export class CurrencyService {
     return response?.response || null;
   });
 
-  public readonly isCurrenciesLoading = computed(() => {
-    return this.resourceCurrencies.isLoading();
-  });
+  public readonly isCurrenciesLoading = computed(() => this.resourceCurrencies.isLoading());
+  public readonly isConversionLoading = computed(() => this.resourceConversionResult.isLoading());
 
-  public readonly isConversionLoading = computed(() => {
-    return this.resourceConversionResult.isLoading();
-  });
-
-  public readonly currenciesError = computed(() => {
-    return this.resourceCurrencies.error();
-  });
-
-  public readonly conversionError = computed(() => {
-    return this.resourceConversionResult.error();
-  });
-
+  public readonly currenciesError = computed(() => this.resourceCurrencies.error());
+  public readonly conversionError = computed(() => this.resourceConversionResult.error());
 
   public convertCurrency(params: ConversionParams): void {
     this.conversionParams.set(params);
-  }
-
-  public clearConversion(): void {
-    this.conversionParams.set(null);
-  }
-
-  public reloadCurrencies(): void {
-    this.resourceCurrencies.reload();
   }
 
   private readonly conversionParams = signal<ConversionParams | null>(null);
 
   private resourceCurrencies = httpResource<CurrenciesApiResponse>(() => {
     const url = `${environment.apiUrl}currencies`;
-
     return {
       url: url,
       params: {
@@ -66,14 +40,12 @@ export class CurrencyService {
         type: 'fiat'
       },
       method: 'GET'
-    }
+    };
   });
 
   private resourceConversionResult = httpResource<ConversionApiResponse>(() => {
     const params = this.conversionParams();
-
     if (!params) return undefined;
-
     return {
       url: `${environment.apiUrl}convert`,
       params: {
