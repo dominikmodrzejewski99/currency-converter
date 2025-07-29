@@ -7,7 +7,7 @@ import { MatOption } from '@angular/material/core';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { toObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime, filter, switchMap } from 'rxjs/operators';
+import {debounceTime, exhaustMap, filter, switchMap} from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 
 @Component({
@@ -52,7 +52,7 @@ export class CurrencyConverterForm {
       .pipe(
         filter(() => this.isFormValid() && !this.hasError()),
         debounceTime(300),
-        switchMap(() => {
+        exhaustMap(() => {
           this.conversionRequest.emit();
           return EMPTY;
         }),
