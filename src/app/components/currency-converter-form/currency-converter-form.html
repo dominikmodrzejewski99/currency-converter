@@ -39,10 +39,10 @@
         <div class="currency-converter__input-row">
             <mat-form-field appearance="outline" class="currency-converter__currency-field">
                 <mat-label>From</mat-label>
-                <mat-select [(ngModel)]="fromCurrency" name="fromCurrency" required>
+                <mat-select data-cy="from-currency" [(ngModel)]="fromCurrency" name="fromCurrency" required>
                     <mat-option value="">Select currency</mat-option>
                     @for (currency of availableFromCurrencies(); track currency.short_code) {
-                    <mat-option [value]="currency.short_code">
+                    <mat-option [value]="currency.short_code" [attr.data-cy]="'option-' + currency.short_code">
                         <div class="currency-converter__currency-option">
                             <span class="currency-converter__currency-name">{{ currency.name }}</span>
                         </div>
@@ -51,7 +51,7 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="currency-converter__amount-field">
+            <mat-form-field data-cy="amount" appearance="outline" class="currency-converter__amount-field">
                 <mat-label>Amount</mat-label>
                 <input matInput type="number" [(ngModel)]="amount" name="amount" min="0.01" step="0.01"
                     placeholder="Enter the amount" required>
@@ -61,10 +61,10 @@
         <div class="currency-converter__input-row currency-converter__input-row--single">
             <mat-form-field appearance="outline" class="currency-converter__currency-field">
                 <mat-label>To</mat-label>
-                <mat-select [(ngModel)]="toCurrency" name="toCurrency" required>
+                <mat-select data-cy="to-currency" [(ngModel)]="toCurrency" name="toCurrency" required>
                     <mat-option value="">Select currency</mat-option>
                     @for (currency of availableToCurrencies(); track currency.short_code) {
-                    <mat-option [value]="currency.short_code">
+                    <mat-option [value]="currency.short_code" [attr.data-cy]="'option-' + currency.short_code">
                         <div class="currency-converter__currency-option">
                             <span class="currency-converter__currency-name">{{ currency.name }}</span>
                         </div>

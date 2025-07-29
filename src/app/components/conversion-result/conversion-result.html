@@ -19,7 +19,7 @@
               <div class="conversion-result__amount-display conversion-result__amount-display--from">
                   <strong>
                       <div class="conversion-result__amount-value">
-                          <h2>
+                          <h2 data-cy="conversion-result">
                               {{ conversionResult()!.amount | number:'1.2-2' }} {{ conversionResult()!.from }}
                               - {{ conversionResult()!.value | number:'1.2-2' }} {{ conversionResult()!.to }}
                           </h2>
