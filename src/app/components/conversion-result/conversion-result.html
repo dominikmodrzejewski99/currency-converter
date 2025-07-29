@@ -1,1 +1,32 @@
-<p>conversion-result works!</p>
+<div class="conversion-result">
+    @if (isLoading()) {
+      <div class="conversion-result__loading-state">
+          <mat-spinner diameter="32"></mat-spinner>
+          <span>Converting currencies...</span>
+      </div>
+    } @else if (error()) {
+      <div class="conversion-result__error-state">
+          <mat-icon color="warn">error</mat-icon>
+          <div class="conversion-result__error-content">
+              <h3>Conversion Error</h3>
+              <p>{{ error()?.message }}</p>
+          </div>
+      </div>
+    } @else if (conversionResult()) {
+
+      <div class="conversion-result__display">
+          <div class="conversion-result__amounts">
+              <div class="conversion-result__amount-display conversion-result__amount-display--from">
+                  <strong>
+                      <div class="conversion-result__amount-value">
+                          <h2>
+                              {{ conversionResult()!.amount | number:'1.2-2' }} {{ conversionResult()!.from }}
+                              - {{ conversionResult()!.value | number:'1.2-2' }} {{ conversionResult()!.to }}
+                          </h2>
+                      </div>
+                  </strong>
+              </div>
+          </div>
+      </div>
+    }
+</div>
