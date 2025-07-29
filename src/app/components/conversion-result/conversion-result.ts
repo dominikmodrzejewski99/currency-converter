@@ -1,22 +1,17 @@
-import { Component, input, output } from '@angular/core';
-import { DecimalPipe, DatePipe } from '@angular/common';
-import { Conversion } from '../../shared/models/conversion.model';
+import { Component, input, computed } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { ConversionType } from '../../shared/models/conversion.model';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-conversion-result',
-  imports: [DecimalPipe, DatePipe],
+  imports: [DecimalPipe, MatIcon, MatProgressSpinner],
   templateUrl: './conversion-result.html',
-  styleUrl: './conversion-result.scss'
+  styleUrl: './conversion-result.scss',
 })
 export class ConversionResult {
-
-  conversionResult = input<Conversion | null>(null);  // Wynik konwersji
-  isLoading = input(false);                           // Loading state
-  error = input<Error | null>(null);                  // Error state
-
-  clearResult = output<void>();                       // (clearResult)
-
-  protected onClear(): void {
-    this.clearResult.emit();
-  }
+  conversionResult = input<ConversionType | null>(null);
+  isLoading = input(false);
+  error = input<Error | null>(null);
 }

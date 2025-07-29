@@ -1,19 +1,17 @@
-<div class="app-container">
+<div class="container">
   <main>
     <section class="form-section">
-      <app-currency-converter-form [currencies]="viewModel().currencies" [isLoading]="viewModel().isCurrenciesLoading"
-                                   [error]="viewModel().currenciesError || null" [(fromCurrency)]="fromCurrency"
-                                   [(toCurrency)]="toCurrency"
-                                   [(amount)]="amount" (conversionRequest)="onConversionRequested()"
-                                   (formReset)="onFormReset()"
-                                   (currenciesSwap)="onCurrenciesSwap()">
+      <app-currency-converter-form [availableFromCurrencies]="viewModel().availableFromCurrencies"
+        [availableToCurrencies]="viewModel().availableToCurrencies" [isFormValid]="viewModel().isFormValid"
+        [isLoading]="viewModel().isCurrenciesLoading" [currenciesError]="viewModel().currenciesError || null"
+        [conversionError]="viewModel().conversionError || null" [(fromCurrency)]="fromCurrency"
+        [(toCurrency)]="toCurrency" [(amount)]="amount" (conversionRequest)="onConversionRequested()">
       </app-currency-converter-form>
     </section>
 
     <section class="result-section">
       <app-conversion-result [conversionResult]="viewModel().conversionResult"
-                             [isLoading]="viewModel().isConversionLoading" [error]="viewModel().conversionError || null"
-                             (clearResult)="onClearResult()">
+        [isLoading]="viewModel().isConversionLoading" [error]="viewModel().conversionError || null">
       </app-conversion-result>
     </section>
   </main>

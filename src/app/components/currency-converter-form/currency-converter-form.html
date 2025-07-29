@@ -1,73 +1,79 @@
-<div class="currency-form">
-    <div class="form-header">
-        <h2>Currency Converter</h2>
+<div class="currency-converter">
 
-        @if (error()) {
-        <div class="error-alert">
-            <strong>❌ Error:</strong> {{ error()?.message }}
+    <h1 class="currency-converter__title">Currency Converter</h1>
+
+    @if (currenciesError()) {
+    <div class="currency-converter__error-banner">
+        <mat-icon color="warn">error</mat-icon>
+        <div class="currency-converter__error-content">
+            <strong>Failed to load currencies</strong>
+            <span>{{ currenciesError()?.message }}</span>
         </div>
-        }
     </div>
+    }
+
+    @if (conversionError()) {
+    <div class="currency-converter__error-banner currency-converter__error-banner--conversion">
+        <mat-icon color="warn">warning</mat-icon>
+        <div class="currency-converter__error-content">
+            <strong>Conversion failed</strong>
+            <span>{{ conversionError()?.message }}</span>
+        </div>
+    </div>
+    }
 
     @if (isLoading()) {
-    <div class="loading-state">
-        <p>⏳ Loading currencies...</p>
+    <div class="currency-converter__loading-banner">
+        <mat-spinner diameter="24"></mat-spinner>
+        <span>Loading currencies...</span>
     </div>
-    } @else if (currencies().length === 0) {
-    <div class="no-data">
-        <p>No currencies available</p>
+    } @else if (availableFromCurrencies().length === 0) {
+    <div class="currency-converter__no-data-banner">
+        <mat-icon>warning</mat-icon>
+        <span>No currencies available</span>
     </div>
     } @else {
-    <form (ngSubmit)="onSubmit()" class="conversion-form">
 
-        <div class="form-group">
-            <label for="amount">Amount:</label>
-            <input id="amount" type="number" [(ngModel)]="amount" name="amount" min="0.01" step="0.01"
-                class="amount-input" placeholder="Enter amount" required>
-        </div>
+    <div class="currency-converter__form">
 
-        <div class="currency-row">
-
-            <div class="form-group">
-                <label for="from">From:</label>
-                <select id="from" [(ngModel)]="fromCurrency" name="from" class="currency-select" required>
-                    <option value="">Select currency</option>
-                    @for (currency of currencies(); track currency.code) {
-                    <option [value]="currency.short_code">
-                        {{ currency.name }}
-                    </option>
+        <div class="currency-converter__input-row">
+            <mat-form-field appearance="outline" class="currency-converter__currency-field">
+                <mat-label>From</mat-label>
+                <mat-select [(ngModel)]="fromCurrency" name="fromCurrency" required>
+                    <mat-option value="">Select currency</mat-option>
+                    @for (currency of availableFromCurrencies(); track currency.short_code) {
+                    <mat-option [value]="currency.short_code">
+                        <div class="currency-converter__currency-option">
+                            <span class="currency-converter__currency-name">{{ currency.name }}</span>
+                        </div>
+                    </mat-option>
                     }
-                </select>
-            </div>
+                </mat-select>
+            </mat-form-field>
 
-            <button type="button" (click)="onSwap()" class="swap-button" [disabled]="!fromCurrency() || !toCurrency()"
-                title="Swap currencies">
-                ↔️
-            </button>
+            <mat-form-field appearance="outline" class="currency-converter__amount-field">
+                <mat-label>Amount</mat-label>
+                <input matInput type="number" [(ngModel)]="amount" name="amount" min="0.01" step="0.01"
+                    placeholder="Enter the amount" required>
+            </mat-form-field>
+        </div>
 
-            <div class="form-group">
-                <label for="to">To:</label>
-                <select id="to" [(ngModel)]="toCurrency" name="to" class="currency-select" required>
-                    <option value="">Select currency</option>
-                    @for (currency of currencies(); track currency.code) {
-                    <option [value]="currency.short_code">
-                        {{ currency.name }}
-                    </option>
+        <div class="currency-converter__input-row currency-converter__input-row--single">
+            <mat-form-field appearance="outline" class="currency-converter__currency-field">
+                <mat-label>To</mat-label>
+                <mat-select [(ngModel)]="toCurrency" name="toCurrency" required>
+                    <mat-option value="">Select currency</mat-option>
+                    @for (currency of availableToCurrencies(); track currency.short_code) {
+                    <mat-option [value]="currency.short_code">
+                        <div class="currency-converter__currency-option">
+                            <span class="currency-converter__currency-name">{{ currency.name }}</span>
+                        </div>
+                    </mat-option>
                     }
-                </select>
-            </div>
+                </mat-select>
+            </mat-form-field>
         </div>
 
-        <div class="form-actions">
-            <button type="button" (click)="onReset()" class="reset-button">
-                Reset
-            </button>
-
-            <button type="submit" class="convert-button"
-                [disabled]="!fromCurrency() || !toCurrency() || amount() <= 0 || fromCurrency() === toCurrency()">
-                Convert
-            </button>
-        </div>
-    </form>
+    </div>
     }
 </div>

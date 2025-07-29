@@ -18,15 +18,37 @@ export class App {
   protected readonly toCurrency = model('');
   protected readonly amount = model(1);
 
+  private readonly availableFromCurrencies = computed(() => {
+    return this.currencyService.currencies().filter(currency =>
+      currency.short_code !== this.toCurrency()
+    );
+  });
+
+  private readonly availableToCurrencies = computed(() => {
+    return this.currencyService.currencies().filter(currency =>
+      currency.short_code !== this.fromCurrency()
+    );
+  });
+
   protected readonly isFormValid = computed(() =>
-    this.fromCurrency() &&
-    this.toCurrency() &&
+    !!this.fromCurrency() &&
+    !!this.toCurrency() &&
     this.amount() > 0 &&
     this.fromCurrency() !== this.toCurrency()
   );
 
+  private readonly hasError = computed(() =>
+    !!this.currencyService.currenciesError() || !!this.currencyService.conversionError()
+  );
+
+  private readonly hasLoading = computed(() =>
+    this.currencyService.isCurrenciesLoading() || this.currencyService.isConversionLoading()
+  );
+
   protected readonly viewModel = computed(() => ({
-    currencies: this.currencyService.currencies(),
+    availableFromCurrencies: this.availableFromCurrencies(),
+    availableToCurrencies: this.availableToCurrencies(),
+
     isCurrenciesLoading: this.currencyService.isCurrenciesLoading(),
     currenciesError: this.currencyService.currenciesError(),
 
@@ -34,33 +56,18 @@ export class App {
     isConversionLoading: this.currencyService.isConversionLoading(),
     conversionError: this.currencyService.conversionError(),
 
-    isFormValid: this.isFormValid()
+    isFormValid: this.isFormValid(),
+    hasError: this.hasError(),
+    hasLoading: this.hasLoading()
   }));
 
   protected onConversionRequested(): void {
-    if (this.isFormValid()) {
+    if (this.isFormValid() && !this.hasError()) {
       this.currencyService.convertCurrency({
         from: this.fromCurrency(),
         to: this.toCurrency(),
         amount: this.amount()
       });
     }
-  }
-
-  protected onFormReset(): void {
-    this.fromCurrency.set('');
-    this.toCurrency.set('');
-    this.amount.set(1);
-    this.currencyService.clearConversion();
-  }
-
-  protected onCurrenciesSwap(): void {
-    const temp = this.fromCurrency();
-    this.fromCurrency.set(this.toCurrency());
-    this.toCurrency.set(temp);
-  }
-
-  protected onClearResult(): void {
-    this.currencyService.clearConversion();
   }
 }
