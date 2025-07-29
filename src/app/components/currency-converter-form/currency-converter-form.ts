@@ -7,13 +7,14 @@ import { MatOption } from '@angular/material/core';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { toObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {debounceTime, exhaustMap, filter, switchMap} from 'rxjs/operators';
+import { exhaustMap, filter } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-currency-converter-form',
   imports: [FormsModule, MatProgressSpinner, MatIcon, MatOption, MatFormField, MatOption, MatSelect, MatInput, MatLabel],
   templateUrl: './currency-converter-form.html',
+  standalone: true,
   styleUrl: './currency-converter-form.scss'
 })
 export class CurrencyConverterForm {
